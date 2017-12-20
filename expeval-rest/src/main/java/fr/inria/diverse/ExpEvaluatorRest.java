@@ -15,6 +15,7 @@ import javax.script.ScriptException;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.udojava.evalex.Expression;
 
 public class ExpEvaluatorRest{
 	
@@ -22,7 +23,7 @@ public class ExpEvaluatorRest{
 	final static Map<String, String> activeClientStore = new HashMap<String, String>();
 	final static Set<String> tokensStore = new HashSet<String>();
 	
-	final static ScriptEngine engine = new ScriptEngineManager().getEngineByName("JavaScript");
+	//final static ScriptEngine engine = new ScriptEngineManager().getEngineByName("JavaScript");
 
 	final static int PORT_NUMBER = 8080;
 	
@@ -66,9 +67,10 @@ public class ExpEvaluatorRest{
 			if(tokensStore.contains(token)) {
 				String exp = jo.get("expression").getAsString();
 				try {
-					Object result = engine.eval(exp);
+					//Object result = engine.eval(exp);
+					Object result = new Expression(exp).eval();
 					return new Gson().toJson(String.format("{\"result\":\"%s\"}", result));
-				} catch (ScriptException e) {
+				} catch (Exception e) {
 					return new Gson().toJson(String.format("{\"fault\":\"invalid expression: %s\"}", exp));
 				}					
 			} else {
